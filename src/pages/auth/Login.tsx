@@ -2,13 +2,19 @@ import loginImg from "../../assets/login.png";
 import { useForm } from "react-hook-form";
 import Logo from "../../assets/logo.png"
 import { NavLink } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "../../schemas/auth/loginSchema"
+import type { LoginFormData } from "../../schemas/auth/loginSchema"
 function Login() {
 
 
     const {
         register,
-        handleSubmit
-    } = useForm();
+        handleSubmit,
+        formState: { errors }
+    } = useForm<LoginFormData>(
+        { resolver: zodResolver(loginSchema) }
+    );
 
     const onSubmit = (data) => {
         console.log(data);
@@ -34,14 +40,16 @@ function Login() {
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Email</label>
                                 <input type="email" {...register("email")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.email && <p className="text-sm text-red-300">{errors.email.message}</p>}
                             </div>
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Password</label>
                                 <input type="password" {...register("password")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.password && <p className="text-sm text-red-300">{errors.password.message}</p>}
                             </div>
                             <div className="flex justify-between m-2">
                                 <div>
-                                    <input type="checkbox" {...register("remember")} />
+                                    <input type="checkbox" {...register("rememberMe")} />
                                     <label className="text-sm font-medium text-gray-700 p-1">Remember Me</label>
                                 </div>
                                 <div>

@@ -1,14 +1,22 @@
-import loginImg from "../assets/login.png"
+import loginImg from "../../assets/login.png"
 import { useForm } from "react-hook-form";
-import Logo from "../assets/logo.png"
+import Logo from "../../assets/logo.png"
+import { registerSchema } from "../../schemas/auth/registerSchema"
+import type { RegisterFormData } from "../../schemas/auth/registerSchema"
+import { zodResolver } from "@hookform/resolvers/zod";
+
+
 import { NavLink } from "react-router-dom";
-function Registration() {
+function Register() {
 
 
     const {
         register,
-        handleSubmit
-    } = useForm();
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerSchema)
+    });
 
     const onSubmit = (data) => {
         console.log(data);
@@ -31,30 +39,37 @@ function Registration() {
 
                         <div>
                             <div className="flex flex-col gap-1 m-3">
-                                <label className="text-sm font-medium text-gray-700 p-1">Name</label>
-                                <input type="text" {...register("name")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                <label className="text-sm font-medium text-gray-700 p-1">Full Name</label>
+                                <input type="text" {...register("fullName")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.fullName && <p className="text-sm text-red-300">{errors.fullName.message}</p>}
                             </div>
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Email</label>
                                 <input type="email" {...register("email")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.email && <p className="text-sm text-red-300">{errors.email.message}</p>}
+
                             </div>
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Phone Number(Optional)</label>
                                 <input type="tel" {...register("phone")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.phone && <p className="text-sm text-red-300">{errors.phone.message}</p>}
                             </div>
                             <div className="flex flex-row justify-between">
                                 <div className="flex flex-col gap-1 m-3">
                                     <label className="text-sm font-medium text-gray-700 p-1">Password</label>
                                     <input type="password" {...register("password")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                    {errors.password && <p className="text-sm text-red-300">{errors.password.message}</p>}
                                 </div>
                                 <div className="flex flex-col gap-1 m-3">
                                     <label className="text-sm font-medium text-gray-700 p-1">Confirm Password</label>
                                     <input type="password" {...register("confirmPassword")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                    {errors.confirmPassword && <p className="text-sm text-red-300">{errors.confirmPassword.message}</p>}
                                 </div>
                             </div>
                             <div className="flex flex-row gap-1 m-3">
-                                <input type="checkbox" {...register("terms")} />
+                                <input type="checkbox" {...register("termsAccepted")} />
                                 <label className="text-sm font-medium text-gray-700 p-1">I agree to Terms of Services and Private Policy</label>
+                                {errors.termsAccepted && <p className="text-sm text-red-300">{errors.termsAccepted.message}</p>}
                             </div>
 
                             <button type="button" onClick={handleSubmit(onSubmit)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm shadow hover:shadow-md transition duration-200 cursor-pointer m-3">Create Account</button>
@@ -65,4 +80,4 @@ function Registration() {
         </div>
     )
 }
-export default Registration;
+export default Register;
