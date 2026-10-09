@@ -4,9 +4,9 @@ import Logo from "../../assets/logo.png"
 import { registerSchema } from "../../schemas/auth/registerSchema"
 import type { RegisterFormData } from "../../schemas/auth/registerSchema"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { register as registerUser } from "../../services/authService"
 
-
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 function Register() {
 
 
@@ -18,8 +18,9 @@ function Register() {
         resolver: zodResolver(registerSchema)
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = (data: RegisterFormData) => {
         console.log(data);
+        registerUser(data)
     };
 
     return (
@@ -27,7 +28,7 @@ function Register() {
             <div className="hidden md:flex md:w-1/2 items-center justify-center bg-blue-50 p-8">
                 <img src={loginImg} alt="Login" className="max-h-[500px] w-auto object-contain" />
             </div>
-            <div className="w-full max-w-md flex-1 flex justify-center items-center p-6 sm:p-12">
+            <div className="w-full max-w-md flex-1 flex flex-col justify-center items-center p-6 sm:p-12">
                 <div className="w-full max-w-md">
                     <div className="flex flex-col justify-right mb-6">
                         <img src={Logo} alt="Logo" className="h-12 w-auto object-contain mb-2" />
@@ -40,8 +41,8 @@ function Register() {
                         <div>
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Full Name</label>
-                                <input type="text" {...register("fullName")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                                {errors.fullName && <p className="text-sm text-red-300">{errors.fullName.message}</p>}
+                                <input type="text" {...register("name")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                {errors.name && <p className="text-sm text-red-300">{errors.name.message}</p>}
                             </div>
                             <div className="flex flex-col gap-1 m-3">
                                 <label className="text-sm font-medium text-gray-700 p-1">Email</label>
@@ -76,6 +77,7 @@ function Register() {
                         </div>
                     </form>
                 </div>
+                <div className="m-3 p-3">Already have an acoount? <Link to="/login" className="text-blue-500 hover:underline text-sm font-semibold">Sign In</Link></div>
             </div>
         </div>
     )

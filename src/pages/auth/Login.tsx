@@ -1,13 +1,20 @@
 import loginImg from "../../assets/login.png";
 import { useForm } from "react-hook-form";
 import Logo from "../../assets/logo.png"
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../schemas/auth/loginSchema"
 import type { LoginFormData } from "../../schemas/auth/loginSchema"
+import { login } from "../../services/authService"
+import type { LoginResponse } from "../../features/auth/authTypes"
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../app/store";
+import { loginSuccess } from "../../features/auth/authSlice"
+import { useNavigate } from 'react-router-dom';
+
 function Login() {
-
-
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -16,18 +23,38 @@ function Login() {
         { resolver: zodResolver(loginSchema) }
     );
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data: LoginFormData) => {
+        try {
+            console.log(data);
+            const result: LoginResponse = await login(data);
+            dispatch(loginSuccess(
+                {
+                    id: result.data.user.id,
+                    name: result.data.user.name,
+                    email: result.data.user.email,
+                    role: result.data.user.role
+
+                }
+            )
+
+            )
+            console.log("login response", result);
+            localStorage.setItem("taskflow_token", result.data.token);
+            navigate('/dashboard')
+        } catch (error) {
+            console.error("Login failed:", error);
+        }
     };
 
     return (
         <div className="w-full min-h-screen flex flex-col md:flex-row bg-gray-50">
+
             <div className="hidden md:flex md:w-1/2 items-center justify-center bg-blue-50 p-8">
                 <img src={loginImg} alt="Login" className="max-h-[500px] w-auto object-contain" />
             </div>
-            <div className="w-full max-w-md flex-1 flex justify-center items-center p-6 sm:p-12">
-                <div className="w-full max-w-md">
-                    <div className="flex items-right justify-right">Don't have an account</div>
+            <div className="w-full relative max-w-md flex-1 flex flex-col justify-center items-center p-6 sm:p-12">
+                <div className="absolute top-2.5 right-2 flex justify-end w-full">Don't have an account? <Link to="/register" className="font-semibold text-blue-500 px-3">Sign Up</Link></div>
+                <div className="w-full max-w-md ustify-center items-center">
                     <div className="flex flex-col justify-right mb-6">
                         <img src={Logo} alt="Logo" className="h-12 w-auto object-contain mb-2" />
                         <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
@@ -53,7 +80,7 @@ function Login() {
                                     <label className="text-sm font-medium text-gray-700 p-1">Remember Me</label>
                                 </div>
                                 <div>
-                                    <NavLink to="/forgotPassword" className="text-sm font-medium text-gray-700 text-blue-300 p-1">Forgot Password?</NavLink>
+                                    <NavLink to="/forgotPassword" className="text-sm font-medium text-blue-300 p-1 hover:underline">Forgot Password?</NavLink>
                                 </div>
                             </div>
                             <button type="button" onClick={handleSubmit(onSubmit)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm shadow hover:shadow-md transition duration-200 cursor-pointer">Sign In</button>
