@@ -29,7 +29,7 @@ function ChangeRoleModal({ onClose, member, onSuccess }: { onClose: () => void, 
                 <div className="flex items-start justify-between">
                     <div>
                         <h3 className="font-semibold">Change Role</h3>
-                        <p className="text-gray-600 text-sm">Update the role for   . This will change access permissions in TaskFlow</p>
+                        <p className="text-gray-600 text-sm">Update the role for {member.name}. This will change access permissions in TaskFlow</p>
                     </div>
                     <div>
                         <X size={20} onClick={onClose} className="hover:bg-gray-400 cursor-pointer" />
@@ -54,7 +54,7 @@ function ChangeRoleModal({ onClose, member, onSuccess }: { onClose: () => void, 
                 </div>
 
             </div>
-            <div>
+            <div className='flex flex-row'>
                 <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-200/60 rounded-xl transition cursor-pointer"
                 >Cancel</button>
                 <button type="button" onClick={() => onSubmit(id, role)}
