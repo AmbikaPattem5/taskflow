@@ -31,3 +31,31 @@ export interface MemberResponse {
         hasPrev: boolean
     }
 }
+export interface EditMemberResponse {
+    success: boolean,
+    message: string,
+    data: {
+        id: string;
+        name: string;
+        email: string;
+        role: UserRole;
+        status: UserStatus;
+        avatar: string;
+        updatedAt: string;
+    }
+}
+
+export interface InviteMemberResponse {
+    success: boolean,
+    message: string,
+    data: {
+        id: string;
+        name: string;
+        email: string;
+        role: UserRole;
+        avatar: string;
+        joinedAt: string,
+        status: UserStatus;
+        temporaryPassword: string
+    }
+}

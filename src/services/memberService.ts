@@ -1,7 +1,7 @@
-import type { MembersPayload, MemberResponse, UserRole } from "../types/memberTypes"
+import type { MembersPayload, MemberResponse, UserRole, UserStatus, EditMemberResponse, InviteMemberResponse } from "../types/memberTypes"
 import api from "./api"
 export async function handleInviteMember(data: MembersPayload) {
-    const response = await api.post('/members', data);
+    const response = await api.post<InviteMemberResponse>('/members', data);
     return response.data;
 
 
@@ -20,7 +20,20 @@ export async function getMembers(status: string, role: string, search: string) {
 }
 
 export async function updateUserRole(id: string, role: UserRole | string) {
-    const response = await api.patch(`/members/${id}`, { role });
+    const response = await api.patch<EditMemberResponse>(`/members/${id}`, { role });
+    return response.data;
+
+
+}
+export async function userStatus(id: string, status: UserStatus) {
+    const response = await api.patch<EditMemberResponse>(`/members/${id}`, { status });
+    return response.data;
+
+
+}
+
+export async function editUserDetails(id: string, data: MembersPayload) {
+    const response = await api.patch<EditMemberResponse>(`/members/${id}`, data);
     return response.data;
 
 

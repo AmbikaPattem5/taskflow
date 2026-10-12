@@ -1,9 +1,11 @@
 import type { Member } from "../../../types/memberTypes"
 import { X, User, Pencil } from "lucide-react"
+import EditMemberModal from "./EditMemberModal";
 import { useState } from "react";
 type TabType = "profile" | "access" | "activity";
 function MemberProfileModal({ onClose, member, onSuccess }: { onClose: () => void, member: Member, onSuccess: () => void }) {
     const [activeTab, setActiveTab] = useState<TabType>("profile")
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
             <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 flex flex-col gap-4 animate-in zoom-in-95 duration-150">
@@ -28,6 +30,7 @@ function MemberProfileModal({ onClose, member, onSuccess }: { onClose: () => voi
                         <div className="relative flex flex-row space-y-2">
                             <Pencil size={18} className="absolute top-3 left-1 text-white" />
                             <button className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700 active:scale-98 rounded-xl shadow-xs hover:shadow-md hover:shadow-teal-600/20 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-2"
+                                onClick={() => setIsEditModalOpen(true)}
                             >Edit Member</button>
                         </div>
                     </div>
@@ -117,6 +120,13 @@ function MemberProfileModal({ onClose, member, onSuccess }: { onClose: () => voi
                     </div>
                 </div>
             </div>
+            {isEditModalOpen && (
+                <EditMemberModal
+                    onClose={() => setIsEditModalOpen(false)}
+                    member={member}
+                    onSuccess={onSuccess}
+                />
+            )}
         </div>
     )
 

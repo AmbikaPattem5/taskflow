@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import type { MembersPayload } from "../../../types/memberTypes"
 import { inviteMemberSchema } from "../../../schemas/members/inviteMemberSchema"
 import { handleInviteMember } from "../../../services/memberService"
-function InviteMemberModal({ onClose }: { onClose: () => void }) {
+function InviteMemberModal({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
     const {
         register,
         handleSubmit,
@@ -16,6 +16,7 @@ function InviteMemberModal({ onClose }: { onClose: () => void }) {
         try {
             console.log(data);
             await handleInviteMember(data)
+            onSuccess();
             onClose();
         }
         catch (error) {

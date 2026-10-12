@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from "react"
 import ChangeRoleModal from "./ChangeRoleModal"
-import type { Member } from "../../../types/memberTypes"
+import type { Member, UserStatus } from "../../../types/memberTypes"
 import MemberProfileModal from "./MemberProfileModal"
+import MemberStatusActivityModal from "./MemberStatusActivityModal.tsx";
+import EditMemberModal from "./EditMemberModal.tsx";
 function MemberActionsMenu({ onClose, member, onSuccess }: { onClose: () => void, member: Member, onSuccess: () => void }) {
     const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState<Boolean>(false)
     const [isMemberProfileOpen, setIsMemberProfileOpen] = useState<Boolean>(false)
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
 
     const menuRef = useRef<HTMLDivElement>(null);
-
+    const isCurrentlyActive = member.status === "ACTIVE";
+    const targetStatus: UserStatus = isCurrentlyActive ? "INACTIVE" : "ACTIVE";
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             // If click was outside this menu, close it
@@ -26,12 +31,15 @@ function MemberActionsMenu({ onClose, member, onSuccess }: { onClose: () => void
 
         <div ref={menuRef} className="absolute right-2 top-10 z-20 w-36 bg-white border border-gray-200 rounded-xl shadow-lg p-1.5 flex flex-col gap-1 text-xs">
             <button type="button" onClick={() => setIsMemberProfileOpen(true)} className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">View Profile</button>
-            <button type="button" className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Edit Member</button>
+            <button type="button" onClick={() => setIsEditModalOpen(true)}
+
+                className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Edit Member</button>
             <button type="button" onClick={() => setIsChangeRoleModalOpen(true)} className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Change Role</button>
-            <button type="button" className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Deactivate</button>
+            <button type="button" onClick={() => setIsStatusModalOpen(true)} className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">{isCurrentlyActive ? "Deactivate" : "Reactivate"}</button>
             {isChangeRoleModalOpen && <ChangeRoleModal onClose={() => setIsChangeRoleModalOpen(false)} member={member} onSuccess={onSuccess} />}
             {isMemberProfileOpen && <MemberProfileModal onClose={() => setIsMemberProfileOpen(false)} member={member} onSuccess={onSuccess} />}
-
+            {isStatusModalOpen && <MemberStatusActivityModal onClose={() => setIsStatusModalOpen(false)} member={member} status={targetStatus} onSuccess={onSuccess} />}
+            {isEditModalOpen && <EditMemberModal onClose={() => setIsEditModalOpen(false)} member={member} onSuccess={onSuccess} />}
         </div>
 
 
