@@ -1,6 +1,8 @@
 function StatCard() {
     return (
-        <div>StatCard</div>
+        <div>
+
+        </div>
     )
 }
 export default StatCard;
