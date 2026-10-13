@@ -1,7 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateProjectModal from "../features/projects/components/CreateProjectModal";
+import type { Project } from "../types/projectTypes"
+import { getAllProjects } from "../services/projectService"
+import toast from "react-hot-toast"
+import { Calendar } from "lucide-react"
 function Projects() {
     const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState<boolean>(false)
+    const [projects, setProjects] = useState<Project[]>([]);
+    async function fetchProjects() {
+        try {
+            const response = await getAllProjects();
+            setProjects(response.data)
+            console.log(response)
+        }
+        catch (error) {
+            toast.error(error?.response?.message)
+        }
+    }
+    useEffect(() => {
+        fetchProjects()
+
+    }, [])
     return (
         <div>
             <div className="flex flex-row justify-between">
@@ -45,6 +64,25 @@ function Projects() {
                     </div>
                 </div>
             </div> */}
+            <div className="w-full grid grid-cols-3 gap-6 m-3">
+                {projects.map(project => {
+                    return (
+                        <div className="flex flex-col gap-1 border border-gray-300 rounded-xl p-2 ">
+                            <h2 className="text-sm font-semibold">{project.name}</h2>
+                            <div className="flex flex-row gap-2">
+                                <p className="text-xs">Status:<span className="text-xs p-0.5 border border-slate-200 bg-teal-200 rounded-xl">{project.status}</span></p>
+                                <p className="text-xs">Priority:<span className="text-xs p-0.5 border border-slate-200 bg-orange-200 rounded-xl">{project.priority}</span></p>
+
+                            </div>
+                            <div className="flex flex-row gap-1">
+                                <Calendar size={14} />
+                                <span className="text-sm">{project.createdAt}</span>
+                            </div>
+
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
