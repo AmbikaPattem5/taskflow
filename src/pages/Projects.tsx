@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CreateProjectModal from "../features/projects/components/CreateProjectModal";
 import type { Project } from "../types/projectTypes"
 import { getAllProjects } from "../services/projectService"
 import toast from "react-hot-toast"
-import { Calendar } from "lucide-react"
+import { Calendar, EllipsisVertical } from "lucide-react"
+import ProjectActionMenu from "../features/projects/components/ProjectActionMenu";
 function Projects() {
     const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState<boolean>(false)
     const [projects, setProjects] = useState<Project[]>([]);
+    const [openMenuProjectId, setOpenMenuProjectId] = useState<string | null>(null)
     async function fetchProjects() {
         try {
             const response = await getAllProjects();
@@ -68,7 +70,18 @@ function Projects() {
                 {projects.map(project => {
                     return (
                         <div className="flex flex-col gap-1 border border-gray-300 rounded-xl p-2 ">
-                            <h2 className="text-sm font-semibold">{project.name}</h2>
+                            <div className="flex flex-row justify-between">
+                                <h2 className="text-sm font-semibold">{project.name}</h2>
+                                <div className="relative">
+                                    <button onClick={() => { setOpenMenuProjectId(openMenuProjectId === project.id ? null : project.id) }}>
+                                        <EllipsisVertical size={16} />
+                                    </button>
+                                    {openMenuProjectId === project.id && <ProjectActionMenu onClose={() => setOpenMenuProjectId(null)} />}
+
+                                </div>
+
+                            </div>
+
                             <div className="flex flex-row gap-2">
                                 <p className="text-xs">Status:<span className="text-xs p-0.5 border border-slate-200 bg-teal-200 rounded-xl">{project.status}</span></p>
                                 <p className="text-xs">Priority:<span className="text-xs p-0.5 border border-slate-200 bg-orange-200 rounded-xl">{project.priority}</span></p>
