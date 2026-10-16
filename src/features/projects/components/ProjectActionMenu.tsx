@@ -3,12 +3,13 @@ import ArchieveProjectModal from "./ArchieveProjectModal";
 import ManageMembersModal from "./ManageMembersModal";
 import EditProjectModal from "./EditProjectModal";
 import ProjectDetailsModal from "./ProjectDetailsModal"
-function ProjectActionMenu({ onClose }: { onClose: () => void }) {
+import type { Project } from "../../../types/projectTypes"
+
+function ProjectActionMenu({ onClose, project, onSuccess }: { onClose: () => void, project: Project, onSuccess: () => void }) {
     const [projectDetailsOpen, setProjectDetailsOpen] = useState<boolean>(false)
     const [editProjectOpen, setEditProjectOpen] = useState<boolean>(false)
     const [manageMembersOpen, setManageMembersOpen] = useState<boolean>(false)
     const [archiveProjectOpen, setArchiveProjectOpen] = useState<boolean>(false)
-    setArchiveProjectOpen
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -35,7 +36,7 @@ function ProjectActionMenu({ onClose }: { onClose: () => void }) {
             <button type="button" onClick={() => setManageMembersOpen(true)} className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Manage Members</button>
             <button type="button" onClick={() => setArchiveProjectOpen(true)} className="w-full text-left px-3 py-1.5 hover:bg-slate-100 rounded-lg text-slate-700 cursor-pointer">Archive Project</button>
             {projectDetailsOpen && <ProjectDetailsModal />}
-            {editProjectOpen && <EditProjectModal />}
+            {editProjectOpen && <EditProjectModal onClose={() => setEditProjectOpen(false)} project={project} onSuccess={onSuccess} />}
             {manageMembersOpen && <ManageMembersModal />}
             {archiveProjectOpen && <ArchieveProjectModal />}
         </div>
