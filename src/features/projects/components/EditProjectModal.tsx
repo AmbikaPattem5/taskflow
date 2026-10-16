@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react"
-
 function EditProjectModal() {
     //    const id: string = member?.id;
     //       const {

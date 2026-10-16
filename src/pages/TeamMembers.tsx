@@ -1,22 +1,22 @@
 import InviteMemberModal from "../features/members/components/InviteMemberModal"
 import { useState, useEffect } from "react"
-import type { UserRole, UserStatus, MemberResponse, Member } from "../types/memberTypes"
+import type { UserRole, UserStatus, Member } from "../types/memberTypes"
 import { EllipsisVertical } from 'lucide-react';
 import toast from "react-hot-toast"
 import { getMembers } from "../services/memberService"
 import MemberActionsMenu from "../features/members/components/MemberActionsMenu"
 
+const Role = {
+    Admin: "ADMIN",
+    Manager: "MANAGER",
+    Member: "MEMBER"
+} as const;
 
-enum Role {
-    Admin = "ADMIN",
-    Manager = "MANAGER",
-    Member = "MEMBER"
+const Status = {
+    Active: "ACTIVE",
+    Inactive: "INACTIVE"
+} as const;
 
-}
-enum Status {
-    Active = "ACTIVE",
-    Inactive = "INACTIVE"
-}
 function TeamMembers() {
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
     const [search, setSearch] = useState<string>("");
@@ -24,7 +24,6 @@ function TeamMembers() {
     const [status, setStatus] = useState<UserStatus | string>("")
     const [members, setMembers] = useState<Member[]>([])
     const [openMenuMemberId, setOpenMenuMemberId] = useState<string | null>(null);
-
 
     function handleChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
         const { name, value } = e.target;
@@ -39,19 +38,16 @@ function TeamMembers() {
         }
     }
     const fetchMembers = async () => {
-
         try {
             const response = await getMembers(status, role, search)
             console.log("rensponse is", response)
             setMembers(response.data)
         }
-        catch (err) {
+        catch (err: any) {
             toast.error(err?.response?.data?.message || "Failed to fetch team members");
-
         }
     };
     useEffect(() => {
-
         fetchMembers();
     }, [status, role, search])
     return (
@@ -77,7 +73,6 @@ function TeamMembers() {
                             {Object.entries(Status).map(([key, value]) => {
                                 return (
                                     <option key={key}>{value}</option>
-
                                 )
                             })}
                             <option></option>
@@ -88,7 +83,7 @@ function TeamMembers() {
                     <button onClick={() => setIsInviteModalOpen(true)}
                         className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700 active:scale-98 rounded-xl shadow-xs hover:shadow-md hover:shadow-teal-600/20 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-2"
                     >+ Invite Member</button>
-                    {isInviteModalOpen && <InviteMemberModal onClose={() => setIsInviteModalOpen(false)} />}
+                    {isInviteModalOpen && <InviteMemberModal onClose={() => setIsInviteModalOpen(false)} onSuccess={fetchMembers} />}
                 </div>
             </div>
             <div>

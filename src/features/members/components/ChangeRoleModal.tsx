@@ -1,25 +1,26 @@
 import { X } from "lucide-react";
-import type { UserRole } from "../../../types/memberTypes"
-import type { Member } from "../../../types/memberTypes"
-import { updateUserRole } from "../../../services/memberService"
-import { useState } from "react"
-import toast from "react-hot-toast"
+import type { UserRole, Member } from "../../../types/memberTypes";
+import { updateUserRole } from "../../../services/memberService";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 function ChangeRoleModal({ onClose, member, onSuccess }: { onClose: () => void, member: Member, onSuccess: () => void }) {
-    const [role, setRole] = useState<UserRole | string>("")
+    const [role, setRole] = useState<UserRole | string>("");
     const id = member?.id;
-    async function onSubmit(id, role) {
-        // if (!id || !role) {
-        //     toast.error("Please select a role");
-        //     return;
-        // }
+
+    async function onSubmit(id: string, role: string) {
+        if (!id || !role) {
+            toast.error("Please select a role");
+            return;
+        }
 
         try {
             await updateUserRole(id, role);
             onSuccess();
-            onClose()
+            onClose();
         }
-        catch (err) {
-            toast.error(err?.response.data.message);
+        catch (err: any) {
+            toast.error(err?.response?.data?.message || "Failed to update role");
         }
     }
 
