@@ -15,7 +15,7 @@ import Analytics from "../pages/Analytics";
 import Settings from "../pages/Settings";
 function AppRoutes() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
                 <Route path="/login" element={<Login />} />
 
