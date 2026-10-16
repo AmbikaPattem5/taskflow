@@ -13,8 +13,8 @@ function MemberStatusActivityModal({ onClose, member, status, onSuccess }: { onC
             onClose();
 
         }
-        catch (err) {
-            toast.error(err?.response?.data?.message)
+        catch (err: any) {
+            toast.error(err?.response?.data?.message || "Failed to update member status")
         }
 
     }

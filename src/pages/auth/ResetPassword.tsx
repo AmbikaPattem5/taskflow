@@ -5,11 +5,9 @@ import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema } from "../../schemas/auth/resetPasswordSchema"
 import type { ResetPasswordFormData } from "../../schemas/auth/resetPasswordSchema"
-import type { ResetPasswordPayload } from "../../features/auth/authTypes"
 import { resetPassword } from "../../services/authService"
 function ResetPassword() {
-    const token = localStorage.getItem("taskflow_token");
-
+    const token = localStorage.getItem("taskflow_token") || "";
 
     const {
         register,
@@ -21,8 +19,7 @@ function ResetPassword() {
 
     const onSubmit = (data: ResetPasswordFormData) => {
         console.log(data);
-        resetPassword({ token: token, password: data.password });
-
+        resetPassword({ token, password: data.password });
     };
 
     return (

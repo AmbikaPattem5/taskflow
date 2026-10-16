@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import CreateProjectModal from "../features/projects/components/CreateProjectModal";
 import type { Project } from "../types/projectTypes"
-import { getAllProjects, editProject } from "../services/projectService"
+import { getAllProjects } from "../services/projectService"
 import toast from "react-hot-toast"
 import { Calendar, EllipsisVertical } from "lucide-react"
 import ProjectActionMenu from "../features/projects/components/ProjectActionMenu";
@@ -16,8 +16,8 @@ function Projects() {
             setProjects(response.data)
             console.log(response)
         }
-        catch (error) {
-            toast.error(error?.response?.message)
+        catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message || "Failed to fetch projects")
         }
     }
     useEffect(() => {
@@ -70,7 +70,7 @@ function Projects() {
             <div className="w-full grid grid-cols-3 gap-6 m-3">
                 {projects.map(project => {
                     return (
-                        <div className="flex flex-col gap-1 border border-gray-300 rounded-xl p-2 ">
+                        <div key={project.id} className="flex flex-col gap-1 border border-gray-300 rounded-xl p-2 ">
                             <div className="flex flex-row justify-between">
                                 <h2 className="text-sm font-semibold">{project.name}</h2>
                                 <div className="relative">

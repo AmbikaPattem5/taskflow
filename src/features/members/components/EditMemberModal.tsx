@@ -1,10 +1,9 @@
 import { X } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import type { MembersPayload } from "../../../types/memberTypes"
+import type { MembersPayload, Member } from "../../../types/memberTypes"
 import { inviteMemberSchema } from "../../../schemas/members/inviteMemberSchema"
 import { editUserDetails } from "../../../services/memberService"
-import type { Member, UserStatus } from "../../../types/memberTypes"
 import toast from "react-hot-toast"
 
 function EditMemberModal({ onClose, member, onSuccess }: { onClose: () => void, member: Member, onSuccess: () => void }) {
@@ -31,8 +30,8 @@ function EditMemberModal({ onClose, member, onSuccess }: { onClose: () => void, 
             onSuccess();
             onClose();
         }
-        catch (error) {
-            toast.error(error?.data?.message)
+        catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message || "Failed to update member");
         }
     };
     return (
