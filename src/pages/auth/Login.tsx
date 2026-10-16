@@ -7,7 +7,7 @@ import { loginSchema } from "../../schemas/auth/loginSchema"
 import type { LoginFormData } from "../../schemas/auth/loginSchema"
 import { login } from "../../services/authService"
 import type { LoginResponse } from "../../features/auth/authTypes"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../app/store";
 import { loginSuccess } from "../../features/auth/authSlice"
 import { useNavigate } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { useNavigate, Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Users, CheckSquare, MessageSquare, Briefcase, CalendarDays, BarChart3, Settings } from 'lucide-react';
 import logo from "../../assets/logo.png"
 function Sidebar() {

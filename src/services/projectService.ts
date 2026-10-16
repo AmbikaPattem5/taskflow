@@ -14,9 +14,7 @@ export async function getAllProjects() {
 
 }
 
-export async function editProject(id, data) {
-    const response = await api.patch("/projects/:id", data);
+export async function editProject(id: string, data: Partial<CreateProjectPayload>) {
+    const response = await api.patch(`/projects/${id}`, data);
     return response.data;
-
-
 }
