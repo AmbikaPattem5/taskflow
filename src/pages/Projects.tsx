@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import CreateProjectModal from "../features/projects/components/CreateProjectModal";
 import type { Project } from "../types/projectTypes"
-import { getAllProjects } from "../services/projectService"
+import { getAllProjects, editProject } from "../services/projectService"
 import toast from "react-hot-toast"
 import { Calendar, EllipsisVertical } from "lucide-react"
 import ProjectActionMenu from "../features/projects/components/ProjectActionMenu";
+
 function Projects() {
     const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState<boolean>(false)
     const [projects, setProjects] = useState<Project[]>([]);

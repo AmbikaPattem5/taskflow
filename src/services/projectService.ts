@@ -13,3 +13,10 @@ export async function getAllProjects() {
 
 
 }
+
+export async function editProject(id, data) {
+    const response = await api.patch("/projects/:id", data);
+    return response.data;
+
+
+}
