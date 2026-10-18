@@ -30,3 +30,10 @@ File: [edit_project_modal_design.jpg](./designs/edit_project_modal_design.jpg)
 
 ![Edit Project Modal](./designs/edit_project_modal_design.jpg)
 
+---
+
+## 5. Archive Project Modal
+File: [archive_project_modal_design.jpg](./designs/archive_project_modal_design.jpg)
+
+![Archive Project Modal](./designs/archive_project_modal_design.jpg)
+
