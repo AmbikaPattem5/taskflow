@@ -20,7 +20,11 @@ api.interceptors.response.use((response) => response,
 
         if (error.response?.status === 401) {
             localStorage.removeItem('taskflow_token');
-            window.location.href = '/login';
+            if (window.location.pathname.includes('/login')) {
+                window.location.href = window.location.origin + '/#/login';
+            } else {
+                window.location.hash = '#/login';
+            }
         }
         return Promise.reject(error);
     }

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react"
 import { useForm } from "react-hook-form";
 import type { CreateProjectPayload } from "../../../types/projectTypes"
-import { createProjectSchema } from "../../../schemas/projects/createProjectSchema"
+import { createProjectSchema } from "../../../schemas/projects/projectSchema"
 import AssignMembersSelect from "./AssignMembersSelect";
 import type { ProjectPriority } from "../../../types/projectTypes";
 import { createProject } from "../../../services/projectService"

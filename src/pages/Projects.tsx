@@ -13,7 +13,7 @@ function Projects() {
     async function fetchProjects() {
         try {
             const response = await getAllProjects();
-            setProjects(response.data)
+            setProjects(Array.isArray(response?.data) ? response.data : []);
             console.log(response)
         }
         catch (error: any) {
@@ -77,7 +77,7 @@ function Projects() {
                                     <button onClick={() => { setOpenMenuProjectId(openMenuProjectId === project.id ? null : project.id) }}>
                                         <EllipsisVertical size={16} />
                                     </button>
-                                    {openMenuProjectId === project.id && <ProjectActionMenu onClose={() => setOpenMenuProjectId(null)} />}
+                                    {openMenuProjectId === project.id && <ProjectActionMenu onClose={() => setOpenMenuProjectId(null)} project={project} onSuccess={fetchProjects} />}
 
                                 </div>
 

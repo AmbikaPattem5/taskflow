@@ -41,7 +41,7 @@ function TeamMembers() {
         try {
             const response = await getMembers(status, role, search)
             console.log("rensponse is", response)
-            setMembers(response.data)
+            setMembers(Array.isArray(response?.data) ? response.data : [])
         }
         catch (err: any) {
             toast.error(err?.response?.data?.message || "Failed to fetch team members");
