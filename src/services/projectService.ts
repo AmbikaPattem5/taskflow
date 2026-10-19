@@ -25,6 +25,7 @@ export async function archieveProject(id: string) {
 
 export interface ProjectMemberUser {
     id: string;
+    _id?: string;
     name: string;
     email: string;
     avatar?: string;
@@ -33,6 +34,7 @@ export interface ProjectMemberUser {
 
 export interface ProjectMember {
     id: string;
+    _id?: string;
     projectId?: string;
     user: ProjectMemberUser;
     role: "ADMIN" | "MANAGER" | "MEMBER";

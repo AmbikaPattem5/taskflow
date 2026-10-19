@@ -10,8 +10,8 @@ function ProjectDetailsModal({ onClose, project, editProject }: { onClose: () =>
                             <h1 className="font-bold">{project.name}</h1>
                         </div>
                         <div className="flex flex-row gap-1">
-                            <p className="text-emerald-700 bg-emerald-50 border-emerald-200 ">{project.status}</p>
-                            <p className="text-purple-700 bg-purple-50 border-purple-200" >{project.priority}</p>
+                            <p className="text-emerald-700 bg-emerald-50 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-lg font-medium">{project.status}</p>
+                            <p className="text-purple-700 bg-purple-50 border border-purple-200 text-xs px-2.5 py-0.5 rounded-lg font-medium" >{project.priority}</p>
                         </div>
                     </div>
                     <div>

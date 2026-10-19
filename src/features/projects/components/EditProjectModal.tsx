@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { createProjectSchema } from "../../../schemas/projects/createProjectSchema"
+import { createProjectSchema } from "../../../schemas/projects/projectSchema"
 import type { Project, CreateProjectPayload, ProjectPriority } from "../../../types/projectTypes"
 import { editProject } from "../../../services/projectService";
 import { toast } from "react-hot-toast"

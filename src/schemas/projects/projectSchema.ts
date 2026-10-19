@@ -19,3 +19,13 @@ export const createProjectSchema = z.object({
 
 
 })
+
+export const addMemberSchema = z.object({
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+    role: z.enum(["ADMIN", "MANAGER", "MEMBER"], {
+        message: "Please select a valid role",
+    }),
+});
