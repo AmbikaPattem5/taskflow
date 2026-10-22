@@ -1,94 +1,137 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { X, Loader2, AlertCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { createProjectSchema } from "../../../schemas/projects/projectSchema"
-import type { Project, CreateProjectPayload, ProjectPriority } from "../../../types/projectTypes"
+import { createProjectSchema } from "../../../schemas/projects/projectSchema";
+import type { Project, CreateProjectPayload, ProjectPriority } from "../../../types/projectTypes";
 import { editProject } from "../../../services/projectService";
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
+import { useState } from "react";
 
-function EditProjectModal({ onClose, project, onSuccess }: { onClose: () => void, project: Project, onSuccess: () => void }) {
+function EditProjectModal({ onClose, project, onSuccess }: { onClose: () => void; project: Project; onSuccess: () => void }) {
     const id: string = project?.id;
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const {
         register,
         handleSubmit,
         watch,
         setValue,
         formState: { errors }
-    } = useForm<CreateProjectPayload>(
-        {
-            resolver: zodResolver(createProjectSchema),
-            defaultValues: {
-                name: project?.name || "",
-                description: project?.description || "",
-                status: project?.status || "ACTIVE",
-                priority: project?.priority || "MEDIUM",
-                startDate: project?.startDate || "",
-                dueDate: project?.dueDate || "",
-                color: project?.color || "",
-                icon: project?.icon || "",
-
-            }
+    } = useForm<CreateProjectPayload>({
+        resolver: zodResolver(createProjectSchema),
+        defaultValues: {
+            name: project?.name || "",
+            description: project?.description || "",
+            status: project?.status || "ACTIVE",
+            priority: project?.priority || "MEDIUM",
+            startDate: project?.startDate || "",
+            dueDate: project?.dueDate || "",
+            color: project?.color || "",
+            icon: project?.icon || "",
         }
-    );
+    });
+
     const onSubmit = async (data: CreateProjectPayload) => {
         try {
-            console.log(data);
+            setIsSubmitting(true);
             await editProject(id, data);
-            toast.success("Project updated successfully")
+            toast.success("Project updated successfully");
             onSuccess();
             onClose();
-        }
-        catch (error: any) {
-            toast.error(error?.response?.data?.message || error?.message || "Failed to update project")
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message || "Failed to update project");
+        } finally {
+            setIsSubmitting(false);
         }
     };
+
     const selectedPriority = watch("priority") || "MEDIUM";
     const priorities: ProjectPriority[] = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 flex flex-col gap-4 animate-in zoom-in-95 duration-150">
-                <div className="flex items-start justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-6 sm:p-7 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+                
+                {/* Header */}
+                <div className="flex items-start justify-between pb-3 border-b border-slate-100 mb-5">
                     <div>
-                        <h3 className="font-semibold">Edit Project</h3>
-                        <p className="text-gray-600 text-sm">Update Project details,timeline, and team assignments</p>
+                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Edit Project</h3>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                            Update project details, status, priority, and timeline
+                        </p>
                     </div>
-                    <div>
-                        <X size={20} onClick={onClose} className="hover:bg-gray-400 cursor-pointer" />
-                    </div>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-full transition-colors cursor-pointer"
+                        aria-label="Close dialog"
+                    >
+                        <X size={18} />
+                    </button>
                 </div>
-                <div>
-                    <form>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        
+                        {/* Left Column */}
                         <div className="flex flex-col gap-4">
                             <div>
-                                <label>Project Name</label>
-                                <input type="text" {...register("name")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                                {errors.name && <p className="text-sm text-red-300">{errors.name.message}</p>}
+                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                                    Project Name <span className="text-rose-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    {...register("name")}
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                                />
+                                {errors.name && (
+                                    <p className="text-xs text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                                        <AlertCircle size={12} />
+                                        {errors.name.message}
+                                    </p>
+                                )}
                             </div>
+
                             <div>
-                                <label>Description</label>
-                                <textarea {...register("description")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
-                                {errors.description && <p className="text-sm text-red-300">{errors.description.message}</p>}
+                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                                    Description
+                                </label>
+                                <textarea
+                                    rows={4}
+                                    {...register("description")}
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition resize-none"
+                                />
+                                {errors.description && (
+                                    <p className="text-xs text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                                        <AlertCircle size={12} />
+                                        {errors.description.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
+
+                        {/* Right Column */}
                         <div className="flex flex-col gap-4">
                             <div>
-                                <label>Status</label>
-                                <select {...register("status")}
-                                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                                    Status
+                                </label>
+                                <select
+                                    {...register("status")}
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
                                 >
-                                    <option value="">Select a status</option>
                                     <option value="ACTIVE">Active</option>
-                                    <option value="ARCHIVED">Archieved</option>
+                                    <option value="ARCHIVED">Archived</option>
                                     <option value="COMPLETED">Completed</option>
-
                                 </select>
-
                             </div>
-                            <div>
-                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Priority</label>
-                                <div className="flex bg-slate-100 p-1 rounded-xl gap-1">
 
+                            <div>
+                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                                    Priority Level
+                                </label>
+                                <div className="grid grid-cols-4 bg-slate-100 p-1 rounded-xl gap-1">
                                     {priorities.map((item) => {
                                         const isSelected = selectedPriority === item;
                                         return (
@@ -96,47 +139,74 @@ function EditProjectModal({ onClose, project, onSuccess }: { onClose: () => void
                                                 key={item}
                                                 type="button"
                                                 onClick={() => setValue("priority", item)}
-                                                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${isSelected
-                                                    ? "bg-blue-600 text-white shadow-xs"
-                                                    : "text-slate-600 hover:text-slate-800 hover:bg-slate-200/60"
-                                                    }`}
-                                            >{item}</button>
-                                        )
+                                                className={`py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer text-center ${
+                                                    isSelected
+                                                        ? "bg-blue-600 text-white shadow-xs"
+                                                        : "text-slate-600 hover:text-slate-800 hover:bg-slate-200/60"
+                                                }`}
+                                            >
+                                                {item}
+                                            </button>
+                                        );
                                     })}
-
                                 </div>
                             </div>
+
                             <div>
-                                Timeline(Start & Due Date)
-                                <div className="flex flex-row">
+                                <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                                    Project Timeline
+                                </label>
+                                <div className="grid grid-cols-2 gap-2.5">
                                     <div>
-                                        <label>Start Date</label>
-                                        <input type="date" {...register("startDate")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                        <span className="text-[11px] text-slate-400 block mb-1">Start Date</span>
+                                        <input
+                                            type="date"
+                                            {...register("startDate")}
+                                            className="w-full px-2.5 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                                        />
                                     </div>
                                     <div>
-                                        <label>Dua Date</label>
-                                        <input type="date" {...register("dueDate")} className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" />
+                                        <span className="text-[11px] text-slate-400 block mb-1">Due Date</span>
+                                        <input
+                                            type="date"
+                                            {...register("dueDate")}
+                                            className="w-full px-2.5 py-2 bg-slate-50/50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="md:col-span-2">
-                            <AssignMembersSelect selectedIds={assignedMemberIds}
-                                onChange={setAssignedMemberIds} />
-                        </div> */}
-                        <div className="md:col-span-2 flex justify-end gap-2 mt-4">
+                    </div>
 
-                            <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-200/60 rounded-xl transition cursor-pointer"
-                            >Cancel</button>
-                            <button type="button" onClick={handleSubmit(onSubmit)}
-                                className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-700 active:scale-98 rounded-xl shadow-xs hover:shadow-md hover:shadow-teal-600/20 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-2"
-
-                            >Update Project</button>
-                        </div>
-                    </form>
-                </div>
+                    {/* Footer Actions */}
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-60"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-98 rounded-xl shadow-sm hover:shadow-md hover:shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-2"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Updating...</span>
+                                </>
+                            ) : (
+                                <span>Update Project</span>
+                            )}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    )
+    );
 }
+
 export default EditProjectModal;
